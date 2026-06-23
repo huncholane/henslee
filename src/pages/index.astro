@@ -1,0 +1,376 @@
+---
+import gifs from '../data/gifs.json';
+
+const count = gifs.length;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>HENSLEE.ME — {count} certified GIFs</title>
+    <meta
+      name="description"
+      content={`A tiled gallery of ${count} Gigachad GIFs. Yes.`}
+    />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🗿%3C/text%3E%3C/svg%3E" />
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+
+    <header class="hero">
+      <p class="kicker">Average enjoyer &nbsp;·&nbsp; certified collection</p>
+      <h1 class="title">HENSLEE<span>.ME</span></h1>
+      <p class="sub">
+        A tiled gallery of <b>{count}</b> absolute units. Hover to ascend.
+        Click to zoom.
+      </p>
+    </header>
+
+    <main class="grid" id="grid">
+      {
+        gifs.map((gif, i) => (
+          <button
+            class="tile"
+            type="button"
+            data-src={gif.src}
+            data-alt={gif.alt}
+            style={`--i:${i}`}
+          >
+            <img src={gif.src} alt={gif.alt} loading="lazy" decoding="async" />
+            <span class="cap">{gif.alt}</span>
+          </button>
+        ))
+      }
+    </main>
+
+    <footer class="foot">
+      <span>🗿</span>
+      <p>
+        {count} GIFs · sourced from Giphy &amp; Tenor · built with Astro · for
+        the chads
+      </p>
+    </footer>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox" aria-hidden="true">
+      <button class="lb-close" id="lbClose" aria-label="Close">✕</button>
+      <button class="lb-nav lb-prev" id="lbPrev" aria-label="Previous">‹</button>
+      <figure class="lb-figure">
+        <img id="lbImg" src="" alt="" />
+        <figcaption id="lbCap"></figcaption>
+      </figure>
+      <button class="lb-nav lb-next" id="lbNext" aria-label="Next">›</button>
+    </div>
+
+    <script>
+      const tiles = Array.from(
+        document.querySelectorAll<HTMLButtonElement>('.tile'),
+      );
+      const lb = document.getElementById('lightbox')!;
+      const lbImg = document.getElementById('lbImg') as HTMLImageElement;
+      const lbCap = document.getElementById('lbCap')!;
+      let current = -1;
+
+      function open(i: number) {
+        current = (i + tiles.length) % tiles.length;
+        const t = tiles[current];
+        lbImg.src = t.dataset.src ?? '';
+        lbImg.alt = t.dataset.alt ?? '';
+        lbCap.textContent = t.dataset.alt ?? '';
+        lb.classList.add('on');
+        lb.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+      function close() {
+        lb.classList.remove('on');
+        lb.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      tiles.forEach((t, i) => t.addEventListener('click', () => open(i)));
+      document.getElementById('lbClose')!.addEventListener('click', close);
+      document
+        .getElementById('lbNext')!
+        .addEventListener('click', () => open(current + 1));
+      document
+        .getElementById('lbPrev')!
+        .addEventListener('click', () => open(current - 1));
+      lb.addEventListener('click', (e) => {
+        if (e.target === lb) close();
+      });
+      window.addEventListener('keydown', (e) => {
+        if (!lb.classList.contains('on')) return;
+        if (e.key === 'Escape') close();
+        if (e.key === 'ArrowRight') open(current + 1);
+        if (e.key === 'ArrowLeft') open(current - 1);
+      });
+    </script>
+
+    <style is:global>
+      :root {
+        --bg: #0a0a0a;
+        --ink: #f4f1ea;
+        --muted: #8a8a8a;
+        --line: #1d1d1d;
+        --accent: #d8b35a;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+          Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+      .grain {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 9999;
+        opacity: 0.045;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      }
+
+      /* ---------- HERO ---------- */
+      .hero {
+        text-align: center;
+        padding: clamp(3rem, 9vw, 7rem) 1.25rem clamp(2rem, 5vw, 3.5rem);
+        border-bottom: 1px solid var(--line);
+        position: relative;
+      }
+      .kicker {
+        margin: 0 0 1.1rem;
+        font-size: 0.72rem;
+        letter-spacing: 0.42em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .title {
+        margin: 0;
+        font-weight: 900;
+        line-height: 0.82;
+        letter-spacing: -0.03em;
+        font-size: clamp(2.6rem, 14.5vw, 11rem);
+        text-transform: uppercase;
+        background: linear-gradient(180deg, #ffffff 0%, #b9b9b9 60%, #5f5f5f 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-shadow: 0 0 60px rgba(255, 255, 255, 0.08);
+      }
+      .title span {
+        -webkit-text-fill-color: transparent;
+        background: linear-gradient(180deg, var(--accent), #8a6a23);
+        -webkit-background-clip: text;
+        background-clip: text;
+      }
+      .sub {
+        margin: 1.4rem auto 0;
+        max-width: 38ch;
+        color: var(--muted);
+        font-size: clamp(0.92rem, 2.4vw, 1.05rem);
+      }
+      .sub b {
+        color: var(--ink);
+      }
+
+      /* ---------- MASONRY GRID ---------- */
+      .grid {
+        column-gap: 14px;
+        columns: 5 220px;
+        padding: clamp(14px, 2.4vw, 28px);
+        max-width: 1700px;
+        margin: 0 auto;
+      }
+      .tile {
+        display: block;
+        width: 100%;
+        margin: 0 0 14px;
+        padding: 0;
+        border: 0;
+        background: #111;
+        position: relative;
+        cursor: zoom-in;
+        overflow: hidden;
+        border-radius: 10px;
+        break-inside: avoid;
+        outline: 1px solid var(--line);
+        outline-offset: -1px;
+        animation: rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+        animation-delay: calc(var(--i) * 28ms);
+      }
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(16px) scale(0.98);
+        }
+      }
+      .tile img {
+        display: block;
+        width: 100%;
+        height: auto;
+        filter: grayscale(1) contrast(1.08);
+        transition: filter 0.35s ease, transform 0.45s
+          cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      .tile:hover img,
+      .tile:focus-visible img {
+        filter: grayscale(0) contrast(1.05);
+        transform: scale(1.06);
+      }
+      .tile::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 10px;
+        box-shadow: inset 0 0 0 0 var(--accent);
+        transition: box-shadow 0.3s ease;
+        pointer-events: none;
+      }
+      .tile:hover::after,
+      .tile:focus-visible::after {
+        box-shadow: inset 0 0 0 2px var(--accent);
+      }
+      .cap {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 1.6rem 0.7rem 0.55rem;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: #fff;
+        text-align: left;
+        background: linear-gradient(transparent, rgba(0, 0, 0, 0.82));
+        transform: translateY(110%);
+        transition: transform 0.3s ease;
+        pointer-events: none;
+      }
+      .tile:hover .cap,
+      .tile:focus-visible .cap {
+        transform: translateY(0);
+      }
+      .tile:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      /* ---------- FOOTER ---------- */
+      .foot {
+        text-align: center;
+        padding: 3rem 1rem 4rem;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+      .foot span {
+        font-size: 1.6rem;
+        display: block;
+        margin-bottom: 0.4rem;
+      }
+
+      /* ---------- LIGHTBOX ---------- */
+      .lightbox {
+        position: fixed;
+        inset: 0;
+        z-index: 10000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.92);
+        backdrop-filter: blur(6px);
+        padding: 4vmin;
+      }
+      .lightbox.on {
+        display: flex;
+      }
+      .lb-figure {
+        margin: 0;
+        max-width: 92vw;
+        max-height: 90vh;
+        text-align: center;
+      }
+      .lb-figure img {
+        max-width: 92vw;
+        max-height: 80vh;
+        border-radius: 12px;
+        box-shadow: 0 30px 90px rgba(0, 0, 0, 0.6);
+      }
+      .lb-figure figcaption {
+        margin-top: 1rem;
+        color: var(--ink);
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 0.82rem;
+        font-weight: 700;
+      }
+      .lb-close,
+      .lb-nav {
+        position: fixed;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        color: #fff;
+        cursor: pointer;
+        border-radius: 999px;
+        transition: background 0.2s ease, transform 0.2s ease;
+      }
+      .lb-close:hover,
+      .lb-nav:hover {
+        background: rgba(255, 255, 255, 0.16);
+        transform: scale(1.08);
+      }
+      .lb-close {
+        top: 4vmin;
+        right: 4vmin;
+        width: 46px;
+        height: 46px;
+        font-size: 1.1rem;
+      }
+      .lb-nav {
+        top: 50%;
+        transform: translateY(-50%);
+        width: 54px;
+        height: 54px;
+        font-size: 2rem;
+        line-height: 1;
+      }
+      .lb-prev {
+        left: 3vmin;
+      }
+      .lb-next {
+        right: 3vmin;
+      }
+
+      @media (max-width: 560px) {
+        .grid {
+          columns: 2 150px;
+        }
+        .lb-nav {
+          width: 44px;
+          height: 44px;
+          font-size: 1.5rem;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .tile {
+          animation: none;
+        }
+        .tile img {
+          transition: none;
+        }
+      }
+    </style>
+  </body>
+</html>
