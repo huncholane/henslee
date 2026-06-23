@@ -1,0 +1,10 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "henslee",
+  "compatibility_date": "2026-06-23",
+  // Static Astro site: serve the built output as Workers Static Assets.
+  // `npm run build` produces ./dist, which is uploaded on `wrangler deploy`.
+  "assets": {
+    "directory": "./dist"
+  }
+}
