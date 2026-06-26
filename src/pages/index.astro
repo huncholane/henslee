@@ -10,10 +10,10 @@ const count = gifs.length;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
-    <title>HENSLEE.ME — {count} certified GIFs</title>
+    <title>HENSLEE.ME · Meet the Henslees</title>
     <meta
       name="description"
-      content={`A tiled gallery of ${count} Gigachad GIFs. Yes.`}
+      content={`Meet the Henslees. A tiled gallery of ${count} certified family members.`}
     />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🗿%3C/text%3E%3C/svg%3E" />
   </head>
@@ -21,11 +21,11 @@ const count = gifs.length;
     <div class="grain" aria-hidden="true"></div>
 
     <header class="hero">
-      <p class="kicker">Average enjoyer &nbsp;·&nbsp; certified collection</p>
+      <p class="kicker">Meet the Henslees &nbsp;·&nbsp; the family collection</p>
       <h1 class="title">HENSLEE<span>.ME</span></h1>
       <p class="sub">
-        A tiled gallery of <b>{count}</b> absolute units. Hover to ascend.
-        Click to zoom.
+        A tiled portrait of <b>{count}</b> certified Henslees. Hover to meet
+        them. Click to zoom.
       </p>
     </header>
 
@@ -53,8 +53,7 @@ const count = gifs.length;
     <footer class="foot">
       <span>🗿</span>
       <p>
-        {count} GIFs · sourced from Giphy &amp; Tenor · built with Astro · for
-        the chads
+        {count} Henslees · one proud family · built with Astro · for the ages
       </p>
     </footer>
 
@@ -136,7 +135,7 @@ const count = gifs.length;
         const title = t.dataset.alt ?? 'Certified GIF';
         if (navigator.share) {
           try {
-            await navigator.share({ title: `${title} — HENSLEE.ME`, url });
+            await navigator.share({ title: `${title} · HENSLEE.ME`, url });
             return;
           } catch {
             return; // user dismissed the share sheet
