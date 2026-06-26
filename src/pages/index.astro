@@ -24,8 +24,8 @@ const count = gifs.length;
       <p class="kicker">Meet the Henslees &nbsp;·&nbsp; the family collection</p>
       <h1 class="title">HENSLEE<span>.ME</span></h1>
       <p class="sub">
-        A tiled portrait of <b>{count}</b> certified Henslees. Hover to meet
-        them. Click to zoom.
+        A day in the life of the <b>Henslees</b>. Hover to meet them. Click to
+        zoom.
       </p>
     </header>
 
@@ -256,16 +256,18 @@ const count = gifs.length;
 
       /* ---------- MASONRY GRID ---------- */
       .grid {
-        column-gap: 14px;
-        columns: 5 220px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 14px;
         padding: clamp(14px, 2.4vw, 28px);
         max-width: 1700px;
         margin: 0 auto;
       }
       .tile {
         display: block;
-        width: 100%;
-        margin: 0 0 14px;
+        flex: 0 0 clamp(150px, 23vw, 290px);
+        margin: 0;
         padding: 0;
         border: 0;
         background: #111;
@@ -273,7 +275,6 @@ const count = gifs.length;
         cursor: zoom-in;
         overflow: hidden;
         border-radius: 10px;
-        break-inside: avoid;
         outline: 1px solid var(--line);
         outline-offset: -1px;
         animation: rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
@@ -480,8 +481,8 @@ const count = gifs.length;
       }
 
       @media (max-width: 560px) {
-        .grid {
-          columns: 2 150px;
+        .tile {
+          flex-basis: calc(50% - 7px);
         }
         .lb-nav {
           width: 44px;
